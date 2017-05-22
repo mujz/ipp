@@ -18,12 +18,12 @@ services:
       - db
     container_name: ipp_api
     image: golang:1.8
-    working_dir: /go/github.com/mujz/i++
+    working_dir: /go/github.com/mujz/ipp
     command: make run
     networks:
       - ipp
     volumes:
-      - ./:/go/github.com/mujz/i++
+      - ./:/go/github.com/mujz/ipp
     environment:
       PORT: 80
       BASE_URL: https://localhost

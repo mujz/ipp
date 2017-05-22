@@ -14,9 +14,9 @@ import (
 
 	"github.com/google/jsonapi"
 	"github.com/lib/pq"
-	"github.com/mujz/i++/authentication"
-	"github.com/mujz/i++/config"
-	"github.com/mujz/i++/validator"
+	"github.com/mujz/ipp/authentication"
+	"github.com/mujz/ipp/config"
+	"github.com/mujz/ipp/validator"
 )
 
 type key int

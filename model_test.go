@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mujz/i++/config"
+	"github.com/mujz/ipp/config"
 )
 
 func TestOpen(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/gorilla/handlers"
-	"github.com/mujz/i++/config"
+	"github.com/mujz/ipp/config"
 )
 
 func NewServer() http.Handler {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	_ "github.com/lib/pq"
-	"github.com/mujz/i++/authentication"
+	"github.com/mujz/ipp/authentication"
 )
 
 type User struct {

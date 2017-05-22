@@ -11,9 +11,9 @@ import (
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/google/jsonapi"
-	"github.com/mujz/i++/authentication"
-	"github.com/mujz/i++/config"
-	"github.com/mujz/i++/util/testutil"
+	"github.com/mujz/ipp/authentication"
+	"github.com/mujz/ipp/config"
+	"github.com/mujz/ipp/util/testutil"
 )
 
 var secret = config.AuthSecretKey
