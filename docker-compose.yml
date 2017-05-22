@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  db:
+    container_name: ipp_db
+    image: postgres:9.6
+    networks:
+      - ipp
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: mujz
+      POSTGRES_PASSWORD: thinkific
+      POSTGRES_DB: ipp
+
+  api:
+    depends_on:
+      - db
+    container_name: ipp_api
+    image: golang:1.8
+    working_dir: /go/github.com/mujz/i++
+    command: make run
+    networks:
+      - ipp
+    volumes:
+      - ./:/go/github.com/mujz/i++
+    environment:
+      PORT: 80
+      BASE_URL: https://localhost
+      WEB_URL: https://localhost:8080
+      DB_NAME: ipp
+      DB_USER: mujtaba
+      DB_PASSWORD: thinkific
+      DB_HOST: ipp_db
+      DB_PORT: 5432
+      DB_SSL_MODE: disable
+      SECRET_KEY: ipp,secret,thinkific
+      AUTH_TOKEN_EXPIRATION_INTERVAL_IN_SECONDS: 86400
+      FB_APP_ID: 240045053140676
+      FB_APP_SECRET: 1fe24bdae8b17b4f34adc27ee88f403e
+
+  web:
+    depends_on:
+      - api
+    container_name: ipp_web
+    image: mujz/nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - ipp
+    volumes:
+      - ./ipp:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/conf.d/ipp.conf
+      - ./certs:/etc/ssl
+
+volumes:
+  db_data:
+
+networks:
+  ipp:

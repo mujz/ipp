@@ -1,0 +1,23 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: "Roboto";
+    justify-content: center;
+}
+
+h1 {
+  font-weight: normal;
+}
+
+a {
+  color: #2196F3;
+}
+
+.error {
+  color: #F44336;
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>i++</title>
+    <meta name="description" content="Number Incrementer">
+    <meta name="author" content="Mujtaba Al-Tameemi">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/material-button.css">
+  </head>
+
+  <body>
+    <app></app>
+
+    <script src="/bower_components/riot/riot.min.js"></script>
+    <script src="/tags/all.js"></script>
+    <script>
+var TOKEN_KEY = "auth_token"
+var API_URL = "https://ipp.mujz.ca/api/v1"
+var Token = window.localStorage.getItem(TOKEN_KEY)
+
+function StoreToken(token) {
+  Token = token;
+  window.localStorage.setItem(TOKEN_KEY, "Bearer " + Token);
+}
+
+function ClearToken() {
+  Token = "";
+  localStorage.clear();
+}
+
+
+function xhr(path, method, payload, success, fail) {
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.open(method, API_URL + path, true);
+
+  if(method != "GET") {
+    xmlhttp.setRequestHeader("Content-type", "application/vnd.api+json");
+  }
+  xmlhttp.setRequestHeader("Authorization", window.localStorage.getItem(TOKEN_KEY));
+
+  xmlhttp.onreadystatechange = function() {
+    if (xmlhttp.readyState == XMLHttpRequest.DONE) {
+      res = JSON.parse(xmlhttp.responseText)
+      if (xmlhttp.status == 200) {
+        return success(res);
+      } else if(xmlhttp.status == 401) {
+        ClearToken();
+      }
+      return fail(res);
+    }
+  }
+  xmlhttp.send(payload);
+}
+
+function GetParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+riot.mount('app')
+    </script>
+  </body>
+</html>
