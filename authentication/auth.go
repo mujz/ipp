@@ -9,11 +9,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const (
-	secret                    = "my,secret,key"
-	expirationPeriodInMinutes = 60
-)
-
 type Token struct {
 	Subject       string `json:"sub" jsonapi:"primary,token"`
 	ExpiresAt     string `jsonapi:"attr,exipres_at"`
