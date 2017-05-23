@@ -1,11 +1,11 @@
+sudo: required
 language: go
 
-go:
-  - 1.8.x
-  - tip
+services:
+  - docker
 
 before_install:
-  - go get -t -v ./...
+  - docker pull postgres:9.6
 
 script:
   - make test
