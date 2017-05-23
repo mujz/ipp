@@ -37,7 +37,7 @@ test:
 
 test-local:
 	go get
-	go test -v -cover *.go
+	go test -race -coverprofile=coverage.txt -covermode=atomic *.go
 
 build:
 	# Build OSX binary
