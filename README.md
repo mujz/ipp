@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/mujz/ipp.svg?branch=master)](https://travis-ci.org/mujz/ipp)
+[![codecov](https://codecov.io/gh/mujz/ipp/branch/master/graph/badge.svg)](https://codecov.io/gh/mujz/ipp)
+
 # Demo
 
 Go to [ipp.mujz.ca](https://ipp.mujz.ca). Sign up with email or Facebook. Break it if you can ;)
