@@ -15,7 +15,8 @@ import (
 type FacebookAuthenticator struct {
 	model              FacebookUserCreator
 	auth               *Authenticator
-	successRedirectURL string
+	authURL            string
+	successRedirectURL *url.URL
 	failureRedirectURL string
 	*oauth2.Config
 }
@@ -38,6 +39,7 @@ const (
 )
 
 var (
+	facebookProfileAPI      = "https://graph.facebook.com/me"
 	InvalidFacebookStateErr = errors.New("authentication: invalid oauth state.")
 	InvalidFacebookTokenErr = errors.New("authentication: failed to parse Facebook token.")
 	InvalidUserInfoErr      = errors.New("authentication: failed to parse Facebook user info.")
@@ -45,10 +47,16 @@ var (
 )
 
 func NewFacebookAuthenticator(appID, appSecret, redirectURL, successRedirectURL, failureRedirectURL string, scopes []string, userCreator FacebookUserCreator, auth *Authenticator) *FacebookAuthenticator {
-	return &FacebookAuthenticator{
+
+	successURL, err := url.Parse(successRedirectURL)
+	if err != nil {
+		panic(err)
+	}
+
+	f := &FacebookAuthenticator{
 		model:              userCreator,
 		auth:               auth,
-		successRedirectURL: successRedirectURL,
+		successRedirectURL: successURL,
 		failureRedirectURL: failureRedirectURL,
 		Config: &oauth2.Config{
 			ClientID:     appID,
@@ -58,10 +66,13 @@ func NewFacebookAuthenticator(appID, appSecret, redirectURL, successRedirectURL,
 			Endpoint:     facebook.Endpoint,
 		},
 	}
+
+	f.setAuthURL()
+
+	return f
 }
 
-// Redirects the user to the Facebook login page
-func (f *FacebookAuthenticator) LoginHandler(w http.ResponseWriter, r *http.Request) {
+func (f *FacebookAuthenticator) setAuthURL() {
 	Url, _ := url.Parse(f.Endpoint.AuthURL)
 	params := url.Values{}
 
@@ -74,9 +85,12 @@ func (f *FacebookAuthenticator) LoginHandler(w http.ResponseWriter, r *http.Requ
 	params.Add("response_type", "code")
 
 	Url.RawQuery = params.Encode()
-	url := Url.String()
+	f.authURL = Url.String()
+}
 
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+// Redirects the user to the Facebook login page
+func (f *FacebookAuthenticator) LoginHandler(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, f.authURL, http.StatusTemporaryRedirect)
 }
 
 func (f *FacebookAuthenticator) LoginCallbackHandler(w http.ResponseWriter, r *http.Request) {
@@ -98,7 +112,7 @@ func (f *FacebookAuthenticator) LoginCallbackHandler(w http.ResponseWriter, r *h
 	}
 
 	// Get the user info (Name and Facebook ID)
-	resp, err := http.Get("https://graph.facebook.com/me?access_token=" +
+	resp, err := http.Get(facebookProfileAPI + "?access_token=" +
 		url.QueryEscape(fbToken.AccessToken))
 	if err != nil {
 		log.Println(err)
@@ -131,16 +145,9 @@ func (f *FacebookAuthenticator) LoginCallbackHandler(w http.ResponseWriter, r *h
 		return
 	}
 
-	var Url *url.URL
-	Url, err = url.Parse(f.successRedirectURL)
-	if err != nil {
-		log.Println(err)
-		http.Redirect(w, r, f.failureRedirectURL, http.StatusTemporaryRedirect)
-		return
-	}
-	parameters := url.Values{}
-	parameters.Add("token", token.Subject)
-	Url.RawQuery = parameters.Encode()
+	params := url.Values{}
+	params.Add("token", token.Subject)
+	f.successRedirectURL.RawQuery = params.Encode()
 	// Redirect to success redirect url with the token
-	http.Redirect(w, r, Url.String(), http.StatusTemporaryRedirect)
+	http.Redirect(w, r, f.successRedirectURL.String(), http.StatusTemporaryRedirect)
 }
