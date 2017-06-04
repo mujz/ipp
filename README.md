@@ -124,7 +124,7 @@ Develop a rest service that:
 1. Allows me to fetch my current integer. For example, if my current integer is 12, the service should return 12. The endpoint should be secured by API key.
 1. Allows me to reset my integer to an arbitrary, non-negative value. For example, my integer may be currently 1005. I would like to reset it to 1000. The endpoint should be secured by API key.
 1. Allow sign up using OAuth
-  - Github, Facebook, Google, anything that supports it!
+    - Github, Facebook, Google, anything that supports it!
 1. Build a UI for the service, especially the account creation functionality, as a single page app that consumes your API.
 
 Deploy your API somewhere and include the link in your README so we can try it out without having to run it.
